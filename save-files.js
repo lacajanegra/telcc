@@ -15,7 +15,7 @@ exports.saveImageOnServer = function (path,cb) {
 var piecesUrl = path.split("/");
 var nameFile = piecesUrl[piecesUrl.length-1];
 download(path, 'photo/' + nameFile, function(){
-  cb(__dirname + "/photo/" + nameFile);
+  cb( "http://http://clo.cl/alice/telcc/photo/" + nameFile);
 });
 
 
