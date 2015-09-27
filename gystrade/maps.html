@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html> 
+<head> 
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
+  <title>Google Maps Multiple Markers</title> 
+  <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
+  <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+</head> 
+<body>
+      <script>
+        
+      </script>
+  <div id="map" style="width: 100%; height: 400px;"></div>
+
+  <script type="text/javascript">
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 11,
+      center: new google.maps.LatLng(-33.45, -70.65),
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+
+
+var FSLocations = new Firebase('https://telegramcc.firebaseio.com/locations');
+
+        FSLocations.on('child_added', function(snapshot) { //Recibe mensaje
+
+          var data =snapshot.val();
+          console.log(data);
+          placeMarker(data.lat,data.lng,data.chatId);
+          
+      });
+
+function placeMarker(latitude, longitude, title) {
+        var infowindow = new google.maps.InfoWindow({
+            content: "ID: " + String(title)
+        });
+        var marker = new google.maps.Marker({
+            position: {lat: latitude, lng: longitude},
+            map: map,
+            title: "ID: " + String(title)
+        });
+        marker.addListener('mouseover', function() {
+            infowindow.open(map, marker);
+        });
+        marker.addListener('mouseout', function() {
+            infowindow.close(map, marker);
+        });
+}
+
+
+
+
+  </script>
+</body>
+</html>
