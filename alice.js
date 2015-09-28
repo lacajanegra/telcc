@@ -11,6 +11,7 @@ var Firebase = require("firebase");
 var FSStock = new Firebase('https://telegramcc.firebaseio.com/stock');
 var FSLocations = new Firebase('https://telegramcc.firebaseio.com/locations');
 var FSImages = new Firebase('https://telegramcc.firebaseio.com/images');
+var FSComment = new Firebase('https://telegramcc.firebaseio.com/comments');
 
  var requester = require("./telegram-request");
  var SaveFiles = require("./save-files");
@@ -20,7 +21,7 @@ var autoAssist = [];
 
 John.on('message', function (msg) {
     console.log(">> mensaje " + msg.text + " recibido desde id:" + msg.chat.id);
-    //console.log(msg);
+   // console.log(msg);
     receiveMessage(msg);
 });
 
@@ -42,12 +43,17 @@ function receiveMessage(msg){
 function optionDispatcher(msg, actualNode,autoAssistPos){
     var chatId = msg.chat.id;
     if (actualNode=="x") {
+        console.log("texto dice " +msg.text);
+        if(msg.text == "Enviar Comentario"){
+            console.log("entre a comentarios")
+            autoAssist[autoAssistPos].node="Enviar Comentario";
+            Alice.sendMessage(chatId, "Escribe comentario, por fa:");
+        }
         if (msg.text == "Ingresar Stock") { 
             autoAssist[autoAssistPos].node="Ingresar Stock";
             console.log("texto dice ingresar stcok");
             Alice.sendMessage(chatId, "Ingresa el stock:");
         }else if(msg.text == "Enviar Comentario"){
-
         }else if(msg.text == "Marcar Ingreso"){
             autoAssist[autoAssistPos].node="Marcar Ingreso";
             Alice.sendMessage(chatId, "Comparte Ubicación, porfavor:");
@@ -66,29 +72,34 @@ function optionDispatcher(msg, actualNode,autoAssistPos){
         }else{
             Alice.sendMessage(chatId, "Ubicación, porfavor:");
         }
-        
     }else if(actualNode == "Ingresar Foto"){
         if(typeof msg.photo !== 'undefined' && msg.photo){
             requester.getImageFile(msg.photo[2].file_id,function cb(data){
             console.log("lista la data de foto " + data);
             SaveFiles.saveImageOnServer(data, function(data){
-                console.log(data);
+                console.log(">> url de la imagen subida: " + data);
                 addImage(chatId, data);
                 outAutoAssist(autoAssistPos,chatId);
-            });
-            
-        });
-            
+            }); 
+        });      
         }else{
             Alice.sendMessage(chatId, "Foto, porfavor:");
         }
-        
-
+    }else if(actualNode == "Enviar Comentario"){
+        if(typeof msg.text !== 'undefined' && msg.text){
+            addComment(chatId, msg.text);
+            outAutoAssist(autoAssistPos,chatId);   
+        }else{
+            Alice.sendMessage(chatId, "Texto, porfavor:");
+        };
     };
 }
 
 function addStock(chatId,stock){
     FSStock.push({"chatId":chatId, "stock":stock});
+}
+function addComment(chatId,comment){
+    FSComment.push({"chatId":chatId, "comment":comment});
 }
 function addImage(chatId,img){
     FSImages.push({"chatId":chatId, "img":img});

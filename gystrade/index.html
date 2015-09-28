@@ -615,7 +615,7 @@
                   </span>
                 </li>
                 <!-- /.timeline-label -->
-      
+
                 <!--  timeline items from ajax -->
      
                 <li>
@@ -862,6 +862,15 @@ var FSImages = new Firebase('https://telegramcc.firebaseio.com/images');
           $( ".timeline" ).prepend( '<li><i class="fa fa-camera bg-purple"></i><div class="timeline-item" style="max-width:400px; width:auto;"><span class="time"><i class="fa fa-clock-o"></i> Hace una hora</span><h3 class="timeline-header"><a href="#">'+ data.chatId +'</a> subió una nueva foto</h3><div class="timeline-body" style="width:auto"><img src="'+ data.img +'" alt="..." width=100% ></div></div></li>' ).fadeIn('slow');
           
       });
+
+var FSComment = new Firebase('https://telegramcc.firebaseio.com/comments');
+ FSComment.on('child_added', function(snapshot) { //Recibe mensaje
+          var data =snapshot.val();
+          $( ".timeline" ).prepend( '<li><i class="fa fa-comments bg-yellow"></i><div class="timeline-item"><span class="time"><i class="fa fa-clock-o"></i> Hace una hora</span><h3 class="timeline-header"><a href="#">'+ data.chatId +'</a> ha escrito un comentario</h3><div class="timeline-body" style="font-size:1.1em; margin-left:0.5em;color:#909090">"'+ data.comment +'"</div><div class="timeline-footer"></div></div></li>' ).fadeIn('slow');
+          
+      });
+
+
 
 function placeMarker(latitude, longitude, title) {
         var infowindow = new google.maps.InfoWindow({
