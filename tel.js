@@ -19,10 +19,9 @@ bot.getMe().then(function (me) {
 });
 
 bot.on('message', function (msg) {
- 
     console.log(">> mensaje recibido desde id:" + msg.chat.id);
    receiveMessage(msg);
-    //bot.sendMessage(chatId, "Bienvenido a GySTrade, elige una opción: \n \n 1) Ingresar Stock \n 2) Enviar comentario");
+    bot.sendMessage(chatId, "Bienvenido a GySTrade, elige una opción: \n \n 1) Ingresar Stock \n 2) Enviar comentario");
 });
 
 function receiveMessage(msg){

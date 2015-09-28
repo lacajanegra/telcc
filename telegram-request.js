@@ -11,7 +11,7 @@ exports.getImageFile = function (file_id,cb) {
 					  }else{
 					  	var info = JSON.parse(body);
 					  	console.log(info);
-					      return cb("https://api.telegram.org/file/bot127742608:AAHRjMYj3UHadAZqV5FdOtnTGCOSY0FyU0Q/"+info.result.file_path);
+					    return cb("https://api.telegram.org/file/bot127742608:AAHRjMYj3UHadAZqV5FdOtnTGCOSY0FyU0Q/"+info.result.file_path);
 					  }
 			})
 
