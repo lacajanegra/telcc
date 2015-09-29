@@ -22,6 +22,7 @@ var autoAssist = [];
 John.on('message', function (msg) {
     console.log(">> mensaje " + msg.text + " recibido desde id:" + msg.chat.id);
    // console.log(msg);
+   console.log("Running");
     receiveMessage(msg);
 });
 
