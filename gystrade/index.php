@@ -105,7 +105,7 @@
         </nav>
       </header>
       <!-- Left side column. contains the logo and sidebar -->
-      
+      <?php require('side-menu.php'); ?>
 
       <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">

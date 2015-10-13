@@ -12,17 +12,21 @@ var FSStock = new Firebase('https://telegramcc.firebaseio.com/stock');
 var FSLocations = new Firebase('https://telegramcc.firebaseio.com/locations');
 var FSImages = new Firebase('https://telegramcc.firebaseio.com/images');
 var FSComment = new Firebase('https://telegramcc.firebaseio.com/comments');
-
+var FSRoot = new Firebase('https://telegramcc.firebaseio.com');
  var requester = require("./telegram-request");
  var SaveFiles = require("./save-files");
 
 var autoAssist = [];
 
+       
+
+        
 
 John.on('message', function (msg) {
     console.log(">> mensaje " + msg.text + " recibido desde id:" + msg.chat.id);
    // console.log(msg);
    console.log("Running");
+
     receiveMessage(msg);
 });
 
@@ -50,10 +54,39 @@ function optionDispatcher(msg, actualNode,autoAssistPos){
             autoAssist[autoAssistPos].node="Enviar Comentario";
             Alice.sendMessage(chatId, "Escribe comentario, por fa:");
         }
-        if (msg.text == "Ingresar Stock") { 
-            autoAssist[autoAssistPos].node="Ingresar Stock";
+        else if (msg.text == "Ingresar Stock") { 
+            autoAssist[autoAssistPos].node="Selecciona Producto (Stock)";
             console.log("texto dice ingresar stcok");
-            Alice.sendMessage(chatId, "Ingresa el stock:");
+            var kb='';
+            prepareKeyboard("stock",chatId,function(data){
+                    console.log(data);
+                    kb=data;    
+                    Alice.sendMessage( chatId,data, undefined, undefined, kb);    
+            });
+
+            //Alice.sendMessage(chatId, "Ingresa el stock:");
+        }else if (msg.text == "Ingresar Pedido") { 
+            autoAssist[autoAssistPos].node="Selecciona Producto (Pedido)";
+            console.log("texto dice ingresar stcok");
+            var kb='';
+            prepareKeyboard("stock",chatId,function(data){
+                    console.log(data);
+                    kb=data;    
+                    Alice.sendMessage( chatId,data, undefined, undefined, kb);    
+            });
+
+            //Alice.sendMessage(chatId, "Ingresa el stock:");
+        }else if (msg.text == "Ingresar Venta") { 
+            autoAssist[autoAssistPos].node="Selecciona Producto (Venta)";
+            console.log("texto dice ingresar Venta");
+            var kb='';
+            prepareKeyboard("stock",chatId,function(data){
+                    console.log(data);
+                    kb=data;    
+                    Alice.sendMessage( chatId,data, undefined, undefined, kb);    
+            });
+
+            //Alice.sendMessage(chatId, "Ingresa el stock:");
         }else if(msg.text == "Enviar Comentario"){
         }else if(msg.text == "Marcar Ingreso"){
             autoAssist[autoAssistPos].node="Marcar Ingreso";
@@ -65,6 +98,21 @@ function optionDispatcher(msg, actualNode,autoAssistPos){
     }else if(actualNode=="Ingresar Stock") {
         console.log("aca agrego el stock");
         addStock(chatId, msg.text);
+        outAutoAssist(autoAssistPos,chatId);
+    }else if(actualNode=="Selecciona Producto (Stock)") {
+        console.log("aca selecciona producto");
+        console.log(msg.text);
+        addStock(chatId, msg.text);
+        outAutoAssist(autoAssistPos,chatId);
+    }else if(actualNode=="Selecciona Producto (Venta)") {
+        console.log("aca selecciona producto");
+        console.log(msg.text);
+        addSale(chatId, msg.text);
+        outAutoAssist(autoAssistPos,chatId);
+    }else if(actualNode=="Selecciona Producto (Pedido)") {
+        console.log("aca selecciona producto");
+        console.log(msg.text);
+        addOrder(chatId, msg.text);
         outAutoAssist(autoAssistPos,chatId);
     }else if(actualNode=="Marcar Ingreso") {
         if(typeof msg.location !== 'undefined' && msg.location){
@@ -96,8 +144,56 @@ function optionDispatcher(msg, actualNode,autoAssistPos){
     };
 }
 
-function addStock(chatId,stock){
-    FSStock.push({"chatId":chatId, "stock":stock});
+function addStock(chatId,msg){
+    var res = msg.split(":");
+    console.log(res[0]);
+     var FSAux = new Firebase('https://telegramcc.firebaseio.com/telpdv/'+chatId);
+                FSAux.on('value', function (snapshot) {
+                    var data = snapshot.val();
+                    FSAux = new Firebase('https://telegramcc.firebaseio.com/pdv/'+String(data)+'/products/'+res[0]);
+                    FSAux.update({ stock: res[1] });
+                });   
+
+
+
+       delete FSAux;
+       return;
+    //FSAux = new Firebase('https://telegramcc.firebaseio.com/pdv/'+String(data)+'/products');
+   // FSStock.push({"chatId":chatId, "stock":stock});
+}
+function addSale(chatId,msg){
+    var res = msg.split(":");
+    console.log(res[0]);
+     var FSAux = new Firebase('https://telegramcc.firebaseio.com/telpdv/'+chatId);
+                FSAux.on('value', function (snapshot) {
+                    var data = snapshot.val();
+                    FSAux = new Firebase('https://telegramcc.firebaseio.com/pdv/'+String(data)+'/products/'+res[0]);
+                    FSAux.update({ sales: res[1] });
+                });   
+
+
+
+       delete FSAux;
+       return;
+    //FSAux = new Firebase('https://telegramcc.firebaseio.com/pdv/'+String(data)+'/products');
+   // FSStock.push({"chatId":chatId, "stock":stock});
+}
+function addOrder(chatId,msg){
+    var res = msg.split(":");
+    console.log(res[0]);
+     var FSAux = new Firebase('https://telegramcc.firebaseio.com/telpdv/'+chatId);
+                FSAux.on('value', function (snapshot) {
+                    var data = snapshot.val();
+                    FSAux = new Firebase('https://telegramcc.firebaseio.com/pdv/'+String(data)+'/products/'+res[0]);
+                    FSAux.update({ order: res[1] });
+                });   
+
+
+
+       delete FSAux;
+       return;
+    //FSAux = new Firebase('https://telegramcc.firebaseio.com/pdv/'+String(data)+'/products');
+   // FSStock.push({"chatId":chatId, "stock":stock});
 }
 function addComment(chatId,comment){
     FSComment.push({"chatId":chatId, "comment":comment});
@@ -108,11 +204,14 @@ function addImage(chatId,img){
 function addLocation(chatId,latitude, longitude){
     FSLocations.push({"chatId":chatId, "lat":latitude, "lng":longitude});
 }
-function prepareKeyboard(node){
+function prepareKeyboard(node, chatId,cb){
+    var kb, productsRet;
     if (node=="x") {
-        var kb = {
+         kb = {
         keyboard: [
             ['Ingresar Stock'],
+            ['Ingresar Venta'],
+            ['Ingresar Pedido'],
             ['Marcar Ingreso'],
             ['Ingresar Foto'],
             ['Enviar Comentario'],
@@ -120,9 +219,38 @@ function prepareKeyboard(node){
             one_time_keyboard: true
         };
         return kb;
-    }else{
-        
+    }else if(node=="stock" || node=="sales" ){
+        Alice.sendMessage( chatId,"Ingresa 'Código de producto':'Cantidad' \n Ej: 1:10 \n\n Los productos disponibles son:", undefined, undefined, kb);    
+
+         kb = {
+        keyboard: [
+                    ],
+            one_time_keyboard: true
+        };
+console.log(kb);   
+        var FSAux = new Firebase('https://telegramcc.firebaseio.com/telpdv/'+chatId);
+                FSAux.on('value', function (snapshot) {
+                    var data = snapshot.val();
+
+                    FSAux = new Firebase('https://telegramcc.firebaseio.com/pdv/'+String(data)+'/products');
+                    FSAux.on('child_added', function (snapshot) {
+                        var data = snapshot.val();
+                        var key = snapshot.key();
+                       kb.keyboard.push([key + " - " + data.name]);
+                       productsRet = key + " - " + data.name;
+                       //console.log(kb);   
+                            cb (productsRet);     
+    
+                    });
+                });   
+
+
+
+       delete FSAux;
+     
     };
+
+
 }
 function outAutoAssist(autoAssistPos,chatId){
   autoAssist.splice(autoAssistPos, 1);

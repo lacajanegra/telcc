@@ -37,6 +37,7 @@ body
 {
 	clear: both;
 }
+
 .layout-boxed .wrapper
 {
 	box-shadow: 0 0 8px rgba(0,0,0,0.5);
@@ -2414,12 +2415,12 @@ a:hover,a:active,a:focus
 }
 .btn-info
 {
-	background-color: #00c0ef;
-	border-color: #00acd6;
+	background-color: #01B2C0;
+	border-color: #03BFCD;
 }
 .btn-info:hover,.btn-info:active,.btn-info.hover
 {
-	background-color: #00acd6;
+	background-color: #03BFCD;
 }
 .btn-danger
 {
@@ -4958,3 +4959,14 @@ table.text-center,table.text-center td,table.text-center th
 		white-space: normal!important;
 	}
 }
+
+
+
+
+
+
+/****CAMBIOS AUGAZ*****/
+.box-gys{
+	border-top:3px solid #FFB14D;
+}
+

@@ -1,9 +1,16 @@
+<?php
+
+$idPdv = $_GET['idPdv'];
+//echo $idPdv;
+
+?>
+
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>GYS Trade | Dashboard</title>
+    <title>GYS Trade | Punto de venta</title>
     <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
     <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
 
@@ -27,15 +34,6 @@
     <![endif]-->
   </head>
   <body class="hold-transition skin-blue sidebar-mini">
-    <script>
-        var FSStock = new Firebase('https://telegramcc.firebaseio.com/stock');
-        FSStock.on('child_added', function(snapshot) { //Recibe mensaje
-          var StockAux= Number($("#stock-number").text());
-          var FSStockAux =snapshot.val();
-          StockAux = StockAux + Number(FSStockAux.stock);
-          $("#stock-number").html(StockAux);
-      });
-    </script>
     <div class="wrapper">
 
       <header class="main-header">
@@ -105,7 +103,7 @@
         </nav>
       </header>
       <!-- Left side column. contains the logo and sidebar -->
-      
+      <?php require('side-menu.php'); ?>
 
       <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
@@ -123,49 +121,82 @@
 
         <!-- Main content -->
         <section class="content">
-          <!-- Info boxes -->
-          <div class="row">
-            <div class="col-md-3 col-sm-6 col-xs-12">
-              <div class="info-box">
-                <span class="info-box-icon bg-aqua"><i class="fa  fa-truck"></i></span>
-                <div class="info-box-content">
-                  <span class="info-box-text">Stock</span>
-                  <span class="info-box-number" id="stock-number">10</span>
-                </div><!-- /.info-box-content -->
-              </div><!-- /.info-box -->
-            </div><!-- /.col -->
-            <div class="col-md-3 col-sm-6 col-xs-12">
-              <div class="info-box">
-                <span class="info-box-icon bg-red"><i class="fa fa-google-plus"></i></span>
-                <div class="info-box-content">
-                  <span class="info-box-text">Likes</span>
-                  <span class="info-box-number">41,410</span>
-                </div><!-- /.info-box-content -->
-              </div><!-- /.info-box -->
-            </div><!-- /.col -->
+          <div class="col-md-4">
 
-            <!-- fix for small devices only -->
-            <div class="clearfix visible-sm-block"></div>
+              <div class="box box-success">
+                  <div class="box-header">
+                    <h3 class="box-title">Ventas por producto</h3>
+                  </div><!-- /.box-header -->
+                  <div class="box-body no-padding">
+                    <table class="table table-condensed">
+                      <tbody id="sales-product">
+                        <tr><th style="width: 5%">#</th><th style="width: 80%">Producto</th><th style="width: 15%">Ventas</th></tr>
 
-            <div class="col-md-3 col-sm-6 col-xs-12">
-              <div class="info-box">
-                <span class="info-box-icon bg-green"><i class="ion ion-ios-cart-outline"></i></span>
-                <div class="info-box-content">
-                  <span class="info-box-text">Ventas</span>
-                  <span class="info-box-number">760</span>
+                    </tbody></table>
+                  </div><!-- /.box-body -->
                 </div>
-              </div>
             </div>
-            <div class="col-md-3 col-sm-6 col-xs-12">
-              <div class="info-box">
-                <span class="info-box-icon bg-yellow"><i class="ion ion-ios-people-outline"></i></span>
-                <div class="info-box-content">
-                  <span class="info-box-text">Miembros</span>
-                  <span class="info-box-number">10</span>
+
+
+
+          <div class="col-md-4">
+          
+               <div class="box box-primary">
+                  <div class="box-header">
+                    <h3 class="box-title ">Stock por producto</h3>
+                  </div><!-- /.box-header -->
+                  <div class="box-body no-padding">
+                    <table class="table table-condensed">
+                      <tbody id="stock-product"><tr><th style="width: 5%">#</th><th style="width: 80%">Producto</th><th style="width: 15%">Stock</th></tr>
+
+                    </tbody></table>
+                  </div><!-- /.box-body -->
                 </div>
-              </div>
+
+
+
+
+              
+
+
+
+
+
             </div>
-          </div><!-- /.row -->
+
+
+  <div class="col-md-4">
+
+              <div class="box box-success">
+                  <div class="box-header">
+                    <h3 class="box-title">Pedidos por producto</h3>
+                  </div><!-- /.box-header -->
+                  <div class="box-body no-padding">
+                    <table class="table table-condensed">
+                      <tbody id="order-product">
+                        <tr><th style="width: 5%">#</th><th style="width: 80%">Producto</th><th style="width: 15%">Pedido</th></tr>
+
+                    </tbody></table>
+                  </div><!-- /.box-body -->
+                </div>
+            </div>
+
+       
+
+        </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -277,6 +308,9 @@
 
 
 
+
+
+
       
         </section><!-- /.content -->
       </div><!-- /.content-wrapper -->
@@ -313,8 +347,53 @@
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="dist/js/pages/dashboard2.js"></script>
     <script src="dist/js/demo.js"></script>
-
     <script type="text/javascript">
+
+      var FSCampaigns = new Firebase('https://telegramcc.firebaseio.com/campaign');
+      var FSRoot = new Firebase('https://telegramcc.firebaseio.com');
+      var FSPdv = new Firebase('https://telegramcc.firebaseio.com/pdv/<?php echo $idPdv ?>');
+     
+      FSPdv.child('products').once('value',function(snapshot) {
+        var cont = 0;
+          snapshot.forEach(function(data){
+            cont++;
+            var product= data.val();
+            composeSalesStock(product.name,product.stock,product.sales,product.order, cont);
+            console.log(product.sales + cont);
+          });
+      }); 
+
+    
+
+  
+
+
+
+
+
+function composeSalesStock(p_name,p_stock,p_ventas,p_order, cont){
+
+  var salesDiv = '<tr><td>'+cont+'</td><td>'+p_name+'</td><td><span class="badge bg-green">'+p_ventas+'</span></td></tr>';
+  var StocksDiv = '<tr><td>'+cont+'</td><td>'+p_name+'</td><td><span class="badge bg-blue">'+p_stock+'</span></td></tr>';
+  var orderDiv = '<tr><td>'+cont+'</td><td>'+p_name+'</td><td><span class="badge bg-blue">'+p_order+'</span></td></tr>';
+
+  $( "#sales-product" ).append( salesDiv ).fadeIn('slow');
+  $( "#stock-product" ).append( StocksDiv ).fadeIn('slow');
+  $( "#order-product" ).append( orderDiv ).fadeIn('slow');
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
     var map = new google.maps.Map(document.getElementById('map'), {
       zoom: 11,
       center: new google.maps.LatLng(-33.45, -70.65),
@@ -369,7 +448,6 @@ function placeMarker(latitude, longitude, title) {
 
 
 
-
-  </script>
+    </script>
   </body>
 </html>
