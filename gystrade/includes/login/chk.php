@@ -14,7 +14,7 @@ if ($user!="2" and $pass!= "2") {
 				
 					$_SESSION["active-user"]="yes";
 					$_SESSION["user-name"]= "Tilibra Test";
-					$_SESSION["user-logo"]= $_SERVER['DOCUMENT_ROOT'] . "/dist/img/userTilibra-160x160.jpg";
+					$_SESSION["user-logo"]= "http://clo.cl/alice/telcc/gystrade/dist/img/userTilibra-160x160.jpg";
 					echo "1";
 
 			
