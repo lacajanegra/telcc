@@ -8,8 +8,8 @@ sleep(1);
 if ($user!="2" and $pass!= "2") {
 	//echo $user;
 		
-		//if ($pass=="clo" && $user == "tilibra@gystrade.cl")  //Comprueba password form con password bdd
-		if ($pass=="" && $user == "")  //Comprueba password form con password bdd
+		if ($pass=="clo" && $user == "tilibra@gystrade.cl")  //Comprueba password form con password bdd
+		//if ($pass=="" && $user == "")  //Comprueba password form con password bdd
 		{
 				
 					$_SESSION["active-user"]="yes";
