@@ -5,7 +5,7 @@ session_start();
 $user = $_POST['user'];
 $pass = $_POST['password'];
 sleep(1);
-if ($user!="2" and $pass!= "2") {
+if ($user!="" and $pass!= "") {
 	//echo $user;
 		
 		if ($pass=="clo" && $user == "tilibra@gystrade.cl")  //Comprueba password form con password bdd

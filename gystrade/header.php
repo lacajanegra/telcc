@@ -24,13 +24,13 @@
               <!-- User Account: style can be found in dropdown.less -->
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <img src="<?echo $_SESSION['user-logo']?>" class="user-image" alt="User Image">
+                  <img src="http://clo.cl/alice/telcc/gystrade/dist/img/userTilibra-160x160.jpg" class="user-image" alt="User Image">
                   <span class="hidden-xs"><?echo $_SESSION["user-name"] ?></span>
                 </a>
                 <ul class="dropdown-menu">
                   <!-- User image -->
                   <li class="user-header">
-                    <img src="<?echo $_SESSION['user-logo']?>" class="img-circle" alt="User Image">
+                    <img src="http://clo.cl/alice/telcc/gystrade/dist/img/userTilibra-160x160.jpg" class="img-circle" alt="User Image">
                     <p>
                       <?echo $_SESSION["user-name"] ?> - by CLO
                       <small>Octubre 2015</small>

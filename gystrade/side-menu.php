@@ -7,10 +7,10 @@
           <!-- Sidebar user panel -->
           <div class="user-panel">
             <div class="pull-left image">
-              <img src="<?echo $_SESSION['user-logo']?>" class="img-circle" alt="User Image">
+              <img src="http://clo.cl/alice/telcc/gystrade/dist/img/userTilibra-160x160.jpg" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
-              <p><?echo $_SESSION["user-name"] ?></p>
+              <p><?php echo $_SESSION["user-name"] ?></p>
               <a href="#"><i class="fa fa-circle text-success"></i> En línea</a>
             </div>
           </div>
