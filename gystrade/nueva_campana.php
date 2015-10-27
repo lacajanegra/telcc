@@ -35,6 +35,7 @@ $id_mandator="id1";
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
+
   <body class="hold-transition skin-blue sidebar-mini">
     <div class="wrapper">
 
@@ -109,6 +110,13 @@ $id_mandator="id1";
 
       <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
+                                        <div class="spinner" style=" overflow: hidden; text-align:center">
+                                          <div class="wait"></div>
+                                          <div class="ball"></div>
+                                          <div class="ball"></div>
+                                          <div class="ball"></div>
+                                          <div class="ball"></div>
+                                </div>
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
@@ -123,8 +131,11 @@ $id_mandator="id1";
 
         <!-- Main content -->
         <section class="content">
+
               <div class="col-md-12">
+
                             <div class="box box-gys">
+
                                 <div class="box-header with-border">
                                     <h3 class="box-title">General Elements</h3>
                                   </div><!-- /.box-header -->
@@ -212,6 +223,7 @@ $id_mandator="id1";
     <script src="dist/js/demo.js"></script>
 
     <script type="text/javascript">
+      $(".spinner").css("visibility","hidden");
 
       var FSCampaigns = new Firebase('https://telegramcc.firebaseio.com/campaign');
       var FSRoot = new Firebase('https://telegramcc.firebaseio.com');
@@ -239,6 +251,7 @@ function composeSelect(brandSel,idSel){
 }
 
 $('#create-campaign').on('click',function(){
+  $(".spinner").css("visibility","inherit");
   var e = document.getElementById("brand-select");
   var brand = e.options[e.selectedIndex].value;
   e = document.getElementById("pdv-select");
@@ -264,16 +277,16 @@ console.log({
     "<?php echo $id_mandator ?>": "true"
   }
 }, function(){
+
+$('.wait').html('Hecho');
+setTimeout( function() {
 $('#campaign-name').val('');
+$(".spinner").css("visibility","hidden");
+//window.location.replace("http://stackoverflow.com");
+              }, 1000 );
+
 });
 });
-
-
-
-
-
-
-
     </script>
   </body>
 </html>

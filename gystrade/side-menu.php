@@ -7,10 +7,10 @@
           <!-- Sidebar user panel -->
           <div class="user-panel">
             <div class="pull-left image">
-              <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+              <img src="<?echo $_SESSION["user-logo"]?>" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
-              <p>GyS User Test</p>
+              <p><?echo $_SESSION["user-name"] ?></p>
               <a href="#"><i class="fa fa-circle text-success"></i> En línea</a>
             </div>
           </div>
@@ -32,11 +32,11 @@
                 <i class="fa fa-dashboard"></i> <span>Campañas</span> <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="campanas.php"><i class="fa fa-circle-o"></i> Ver Campañas</a></li>
+                <li><a href="index.php"><i class="fa fa-circle-o"></i> Ver Campañas</a></li>
                 <li class=""><a href="nueva_campana.php"><i class="fa fa-circle-o"></i> Crear Campaña</a></li>
               </ul>
             </li>
-            <li class="treeview">
+            <!--<li class="treeview">
               <a href="#">
                 <i class="fa fa-dashboard"></i> <span>Puntos de Venta</span> <i class="fa fa-angle-left pull-right"></i>
               </a>
@@ -44,14 +44,14 @@
                 <li><a href="campanas.php"><i class="fa fa-circle-o"></i> Ver Puntos de Venta</a></li>
                 <li class=""><a href="nueva_campana.php"><i class="fa fa-circle-o"></i> Crear Punto de Venta</a></li>
               </ul>
-            </li>
+            </li>-->
             <li class="treeview">
               <a href="#">
                 <i class="fa fa-dashboard"></i> <span>Operadores</span> <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="campanas.php"><i class="fa fa-circle-o"></i> Ver Operadores</a></li>
-                <li class=""><a href="nueva_campana.php"><i class="fa fa-circle-o"></i> Crear Operador</a></li>
+                <li><a href="operadores.php"><i class="fa fa-circle-o"></i> Ver Operadores</a></li>
+                <!--<li class=""><a href="nueva_campana.php"><i class="fa fa-circle-o"></i> Crear Operador</a></li>-->
               </ul>
             </li>
             

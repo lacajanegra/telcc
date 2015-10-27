@@ -42,7 +42,7 @@ $id_mandator="id1";
   <body class="hold-transition skin-blue sidebar-mini">
     <div class="wrapper">
 
-        <?php require('header.php'); ?>
+      <?php require('header.php'); ?>
 
       <!-- Left side column. contains the logo and sidebar -->
         <?php require('side-menu.php'); ?>
@@ -67,12 +67,19 @@ $id_mandator="id1";
               
               <div class="box box-solid">
                 <div class="box-header with-border">
-                  <h3 class="box-title">Vuestras Campañas</h3>
+                  <h3 class="box-title">Operadores</h3>
                 </div><!-- /.box-header -->
                 <div id="box-body" class="box-body">
 
 
-               
+               <div class="col-md-12">
+              <!-- Widget: user widget style 1 -->
+
+              </div><!-- /.widget-user -->
+
+
+
+            </div>
 
 
                 </div><!-- /.box-body -->
@@ -137,46 +144,28 @@ $id_mandator="id1";
     <script src="dist/js/demo.js"></script>
     <script type="text/javascript">
 
-      var FSCampaigns = new Firebase('https://telegramcc.firebaseio.com/campaign');
+      var FSOperators = new Firebase('https://telegramcc.firebaseio.com/operators');
       var FSRoot = new Firebase('https://telegramcc.firebaseio.com');
       var FSPdv = new Firebase('https://telegramcc.firebaseio.com/pdv');
-        FSCampaigns.on('child_added', function(snapshot) { //Recibe mensaje
-            var data = snapshot.key();
-            var cname = '';
-            var idPdv = '';
-            var nameBrand = ''; 
-               //var data=3;
-            FSCampaigns.child(data+"/inspectors").once('child_added', function(snapshot) {
-              console.log(snapshot.exists())
-                if (snapshot.key() == "<?php echo $id_mandator; ?>") //cambiar por id real
-                {
-                      var idRef = snapshot.ref().parent().parent().key();
-                      FSCampaigns.child(idRef).on('value',function(snapshot) {
-                            var data = snapshot.val();
-                            //console.log(data);
-                             FSRoot.child('brand/' + data.brand_id).once('value',function(snapshot) {
-                                  var data = snapshot.val();
-                                  nameBrand = data.name;
-                            }); 
 
-                            var data2 = snapshot.child('pdv').val();
-                            idPdv = data2.pdv_id;
-                            cname = data.name;
-                            FSPdv.child(data2.pdv_id).once('value',function(snapshot) {
-                                  var data = snapshot.val();
-                                  composeCampaigns(idPdv,data.nombre,cname,nameBrand);
-                            }); 
-
-                       }); 
-                };
+      FSOperators.on('child_added', function(snapshot) { //Recibe mensaje
+            var data = snapshot.val();
+            var key = snapshot.key();
+            var oName = '';
+            var Pdv = '';
+            var idTelegram = ''; 
+            //console.log(data);
+            oName = data.name;
+            idTelegram = data.telegram_id;
+            FSOperators.child( key +"/pdv").once('value', function(snapshot) {
+              var dataPdv = snapshot.val();
+              composeOperators(oName,idTelegram,dataPdv.name);
             }); 
-        });
+      });
 
 
-
-
-function composeCampaigns(id_pdv,pdv_name,camp_name,name_brand){
-  $( "#box-body" ).prepend( '<div class="box-group" id="accordion"><div class="panel "><div class="box-header with-border"><a data-toggle="collapse" data-parent="#accordion" href="#collapse'+camp_name+'" aria-expanded="false" class="collapsed"><div style="float:right"><h4 class="box-title" style="color:#B3B3B3; font-size:1em">'+ name_brand + '</h4></div> <h4 class="box-title"><i class="fa fa-fw fa-shopping-cart"> </i> ' +camp_name +'</h4></a></div><div id="collapse'+camp_name+'" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;"><div class="box-body"><a href="pdv.php?idPdv='+id_pdv+'">'+pdv_name+'</a></div></div></div></div>' ).fadeIn('slow');
+function composeOperators(oName,idTelegram,dataPdv){
+  $( "#box-body" ).prepend('<div class="box box-widget widget-user-2"><div class="widget-user-header bg-yellow"><div class="widget-user-image"><img class="img-circle" src="dist/img/avatar5.png" alt="User Avatar"></div><h3 class="widget-user-username">'+oName+'</h3><h5 class="widget-user-desc"> Punto de Venta: '+dataPdv+'</h5></div><div class="box-footer no-padding"><ul class="nav nav-stacked"><li><a href="#">ID Telegram<span class="pull-right badge bg-blue">'+idTelegram+'</span></a></li></ul></div>').fadeIn('slow');
 }
 
 
