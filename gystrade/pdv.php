@@ -1,9 +1,17 @@
 <?php
+session_start();
 
+if($_SESSION['active-user']!='yes')
+{
+    header('Location: login.php');
+}else{
+  $_SESSION["check-status"]="no";
+}
 $idPdv = $_GET['idPdv'];
-//echo $idPdv;
+
 
 ?>
+
 
 <!DOCTYPE html>
 <html>
@@ -36,74 +44,9 @@ $idPdv = $_GET['idPdv'];
   <body class="hold-transition skin-blue sidebar-mini">
     <div class="wrapper">
 
-      <header class="main-header">
-
-        <!-- Logo -->
-        <a href="index2.html" class="logo">
-          <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"><b>G</b>yS</span>
-          <!-- logo for regular state and mobile devices -->
-          <span class="logo-lg"><b>GyS</b>Trade</span>
-        </a>
-
-        <!-- Header Navbar: style can be found in header.less -->
-        <nav class="navbar navbar-static-top" role="navigation">
-          <!-- Sidebar toggle button-->
-          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-            <span class="sr-only">Toggle navigation</span>
-          </a>
-          <!-- Navbar Right Menu -->
-          <div class="navbar-custom-menu">
-            <ul class="nav navbar-nav">
-              <!-- Messages: style can be found in dropdown.less-->
-             
-              <!-- Notifications: style can be found in dropdown.less -->
-              
-              <!-- User Account: style can be found in dropdown.less -->
-              <li class="dropdown user user-menu">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <img src="dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
-                  <span class="hidden-xs">GyS User Test</span>
-                </a>
-                <ul class="dropdown-menu">
-                  <!-- User image -->
-                  <li class="user-header">
-                    <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
-                    <p>
-                      GyS User Test - by CLO
-                      <small>Septiembre 2015</small>
-                    </p>
-                  </li>
-                  <!-- Menu Body -->
-                  <li class="user-body">
-                    <div class="col-xs-4 text-center">
-                      <a href="#">op1</a>
-                    </div>
-                    <div class="col-xs-4 text-center">
-                      <a href="#">op2</a>
-                    </div>
-                    <div class="col-xs-4 text-center">
-                      <a href="#">op3</a>
-                    </div>
-                  </li>
-                  <!-- Menu Footer-->
-                  <li class="user-footer">
-                    <div class="pull-left">
-                      <a href="#" class="btn btn-default btn-flat">Perfil</a>
-                    </div>
-                    <div class="pull-right">
-                      <a href="#" class="btn btn-default btn-flat">Cerrar Sesión</a>
-                    </div>
-                  </li>
-                </ul>
-              </li>
-             
-            </ul>
-          </div>
-        </nav>
-      </header>
+ <?php require('header.php'); ?>
       <!-- Left side column. contains the logo and sidebar -->
-      <?php require('side-menu.php'); ?>
+     <?php require('side-menu.php'); ?>
 
       <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
@@ -351,35 +294,52 @@ $idPdv = $_GET['idPdv'];
 
       var FSCampaigns = new Firebase('https://telegramcc.firebaseio.com/campaign');
       var FSRoot = new Firebase('https://telegramcc.firebaseio.com');
-      var FSPdv = new Firebase('https://telegramcc.firebaseio.com/pdv/<?php echo $idPdv ?>');
-     
-      FSPdv.child('products').once('value',function(snapshot) {
-        var cont = 0;
-          snapshot.forEach(function(data){
-            cont++;
-            var product= data.val();
-            composeSalesStock(product.name,product.stock,product.sales,product.order, cont);
-            console.log(product.sales + cont);
-          });
+      var FSPdv = new Firebase('https://telegramcc.firebaseio.com/pdv/<?php echo $idPdv ?>/products');
+       var cont = 1;
+     //console.log("https://telegramcc.firebaseio.com/pdv/<?php echo $idPdv ?>/products");
+      FSPdv.on('child_added', function(snapshot) { 
+        var data = snapshot.val();
+  
+        //console.log(data.name);
+        var idProduct = snapshot.key();
+
+        composeSalesStock(data.name,data.stock,data.sales,data.order, cont,idProduct);
+         cont++;
+
       }); 
 
     
-
+FSPdv.on('child_changed', function(snapshot, prevChildKey) {
+  // code to handle child data changes.
+  var id = snapshot.key();
+  var data = snapshot.val();
+  productChanged( data.stock,data.sales,data.order,id);
+});
   
 
 
 
 
 
-function composeSalesStock(p_name,p_stock,p_ventas,p_order, cont){
+function composeSalesStock(p_name,p_stock,p_sales,p_order, cont,id){
 
-  var salesDiv = '<tr><td>'+cont+'</td><td>'+p_name+'</td><td><span class="badge bg-green">'+p_ventas+'</span></td></tr>';
-  var StocksDiv = '<tr><td>'+cont+'</td><td>'+p_name+'</td><td><span class="badge bg-blue">'+p_stock+'</span></td></tr>';
-  var orderDiv = '<tr><td>'+cont+'</td><td>'+p_name+'</td><td><span class="badge bg-blue">'+p_order+'</span></td></tr>';
+  var salesDiv = '<tr><td>'+cont+'</td><td>'+p_name+'</td><td><span class="badge bg-green" id = "sales'+ id +'" >'+p_sales+'</span></td></tr>';
+  var StocksDiv = '<tr><td>'+cont+'</td><td>'+p_name+'</td><td><span class="badge bg-blue" id = "stock'+ id +'" >'+p_stock+'</span></td></tr>';
+  var orderDiv = '<tr><td>'+cont+'</td><td>'+p_name+'</td><td><span class="badge bg-blue" id = "order'+ id +'" >'+p_order+'</span></td></tr>';
 
   $( "#sales-product" ).append( salesDiv ).fadeIn('slow');
   $( "#stock-product" ).append( StocksDiv ).fadeIn('slow');
   $( "#order-product" ).append( orderDiv ).fadeIn('slow');
+}
+
+function productChanged(p_stock,p_sales,p_order,id){
+console.log(p_stock);
+console.log(p_sales);
+console.log(p_order);
+
+  $( "#sales"+ id ).html(p_sales);
+  $( "#stock"+ id ).html(p_stock);
+  $( "#order"+ id ).html(p_order);
 }
 
 
@@ -406,7 +366,7 @@ var FSLocations = new Firebase('https://telegramcc.firebaseio.com/locations');
       FSLocations.on('child_added', function(snapshot) { //Recibe mensaje
 
           var data =snapshot.val();
-          console.log(data);
+          //console.log(data);
           placeMarker(data.lat,data.lng,data.chatId);
           
       });
