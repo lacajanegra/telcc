@@ -26,7 +26,7 @@ John.on('message', function (msg) {
     console.log(">> mensaje " + msg.text + " recibido desde id:" + msg.chat.id);
    // console.log(msg);
    console.log("Running");
-
+    
     receiveMessage(msg);
 });
 
@@ -52,7 +52,7 @@ function optionDispatcher(msg, actualNode,autoAssistPos){
         if(msg.text == "Enviar Comentario"){
             console.log("entre a comentarios")
             autoAssist[autoAssistPos].node="Enviar Comentario";
-            Alice.sendMessage(chatId, "Escribe comentario, por fa:");
+            Alice.sendMessage(chatId, "Escribe comentario, por favor:");
         }
         else if (msg.text == "Ingresar Stock") { 
             autoAssist[autoAssistPos].node="Selecciona Producto (Stock)";
@@ -93,27 +93,41 @@ function optionDispatcher(msg, actualNode,autoAssistPos){
             Alice.sendMessage(chatId, "Comparte Ubicación, porfavor:");
         }else if(msg.text == "Ingresar Foto"){
             autoAssist[autoAssistPos].node="Ingresar Foto";
-            Alice.sendMessage(chatId, "Envia foto, por fa:");
+            Alice.sendMessage(chatId, "Envia foto, por favor:");
         };
     }else if(actualNode=="Ingresar Stock") {
         console.log("aca agrego el stock");
-        addStock(chatId, msg.text);
-        outAutoAssist(autoAssistPos,chatId);
+        if (addStock(chatId, msg.text)==1){
+            console.log("Ingresar Stock: Hecho");
+            outAutoAssist(autoAssistPos,chatId);
+        }else{
+            console.log("Aun no se ingresa stock");
+        }
+        
     }else if(actualNode=="Selecciona Producto (Stock)") {
         console.log("aca selecciona producto");
-        console.log(msg.text);
-        addStock(chatId, msg.text);
-        outAutoAssist(autoAssistPos,chatId);
+        if (addStock(chatId, msg.text)==1){
+            console.log("Ingresar Stock: Hecho");
+            outAutoAssist(autoAssistPos,chatId);
+        }else{
+            console.log("Aun no se ingresa stock");
+        }
     }else if(actualNode=="Selecciona Producto (Venta)") {
         console.log("aca selecciona producto");
-        console.log(msg.text);
-        addSale(chatId, msg.text);
-        outAutoAssist(autoAssistPos,chatId);
+        if (addSale(chatId, msg.text)==1){
+            console.log("Ingresar Venta: Hecho");
+            outAutoAssist(autoAssistPos,chatId);
+        }else{
+            console.log("Aun no se ingresa stock");
+        }
     }else if(actualNode=="Selecciona Producto (Pedido)") {
         console.log("aca selecciona producto");
-        console.log(msg.text);
-        addOrder(chatId, msg.text);
-        outAutoAssist(autoAssistPos,chatId);
+        if (addOrder(chatId, msg.text)==1){
+            console.log("Ingresar Pedido: Hecho");
+            outAutoAssist(autoAssistPos,chatId);
+        }else{
+            console.log("Aun no se ingresa stock");
+        }
     }else if(actualNode=="Marcar Ingreso") {
         if(typeof msg.location !== 'undefined' && msg.location){
             addLocation(chatId, msg.location.latitude, msg.location.longitude);
@@ -146,52 +160,68 @@ function optionDispatcher(msg, actualNode,autoAssistPos){
 
 function addStock(chatId,msg){
     var res = msg.split(":");
-    console.log(res[0]);
-     var FSAux = new Firebase('https://telegramcc.firebaseio.com/telpdv/'+chatId);
-                FSAux.on('value', function (snapshot) {
-                    var data = snapshot.val();
-                    FSAux = new Firebase('https://telegramcc.firebaseio.com/pdv/'+String(data)+'/products/'+res[0]);
-                    FSAux.update({ stock: res[1] });
-                });   
+    if (formatValue(msg) == 1){
+             var FSAux = new Firebase('https://telegramcc.firebaseio.com/telpdv/'+chatId);
+                        FSAux.on('value', function (snapshot) {
+                            var data = snapshot.val();
+                            FSAux = new Firebase('https://telegramcc.firebaseio.com/pdv/'+String(data)+'/products/'+res[0]);
+                            FSAux.update({ stock: res[1] });
+                        });   
 
 
 
-       delete FSAux;
-       return;
+               delete FSAux;
+               return 1;
+    }else{
+        console.log("error formato");
+        Alice.sendMessage(chatId, "Error en el formato, intenta otra vez");
+        return 0;
+    }
+
     //FSAux = new Firebase('https://telegramcc.firebaseio.com/pdv/'+String(data)+'/products');
    // FSStock.push({"chatId":chatId, "stock":stock});
 }
 function addSale(chatId,msg){
     var res = msg.split(":");
-    console.log(res[0]);
-     var FSAux = new Firebase('https://telegramcc.firebaseio.com/telpdv/'+chatId);
-                FSAux.on('value', function (snapshot) {
-                    var data = snapshot.val();
-                    FSAux = new Firebase('https://telegramcc.firebaseio.com/pdv/'+String(data)+'/products/'+res[0]);
-                    FSAux.update({ sales: res[1] });
-                });   
+     if (formatValue(msg) == 1){   
+             var FSAux = new Firebase('https://telegramcc.firebaseio.com/telpdv/'+chatId);
+                        FSAux.on('value', function (snapshot) {
+                            var data = snapshot.val();
+                            FSAux = new Firebase('https://telegramcc.firebaseio.com/pdv/'+String(data)+'/products/'+res[0]);
+                            FSAux.update({ sales: res[1] });
+                        });   
 
 
 
-       delete FSAux;
-       return;
+               delete FSAux;
+               return 1;
+       }else{
+        console.log("error formato");
+        Alice.sendMessage(chatId, "Error en el formato, intenta otra vez");
+        return 0;
+    }
     //FSAux = new Firebase('https://telegramcc.firebaseio.com/pdv/'+String(data)+'/products');
    // FSStock.push({"chatId":chatId, "stock":stock});
 }
 function addOrder(chatId,msg){
     var res = msg.split(":");
-    console.log(res[0]);
-     var FSAux = new Firebase('https://telegramcc.firebaseio.com/telpdv/'+chatId);
-                FSAux.on('value', function (snapshot) {
-                    var data = snapshot.val();
-                    FSAux = new Firebase('https://telegramcc.firebaseio.com/pdv/'+String(data)+'/products/'+res[0]);
-                    FSAux.update({ order: res[1] });
-                });   
+     if (formatValue(msg) == 1){  
+                 var FSAux = new Firebase('https://telegramcc.firebaseio.com/telpdv/'+chatId);
+                            FSAux.on('value', function (snapshot) {
+                                var data = snapshot.val();
+                                FSAux = new Firebase('https://telegramcc.firebaseio.com/pdv/'+String(data)+'/products/'+res[0]);
+                                FSAux.update({ order: res[1] });
+                            });   
 
 
 
-       delete FSAux;
-       return;
+                   delete FSAux;
+                   return 1;
+       }else{
+        console.log("error formato");
+        Alice.sendMessage(chatId, "Error en el formato, intenta otra vez");
+        return 0;
+    }
     //FSAux = new Firebase('https://telegramcc.firebaseio.com/pdv/'+String(data)+'/products');
    // FSStock.push({"chatId":chatId, "stock":stock});
 }
@@ -255,4 +285,44 @@ console.log(kb);
 function outAutoAssist(autoAssistPos,chatId){
   autoAssist.splice(autoAssistPos, 1);
   Alice.sendMessage(chatId, "Finalizado, Gracias!");
+}
+
+
+
+function addOrder2(chatId,msg){
+
+    //var formatFlag = 1;
+    formatValue(chatId,msg);
+    //console.log(formatFlag);
+      // return;
+    //FSAux = new Firebase('https://telegramcc.firebaseio.com/pdv/'+String(data)+'/products');
+   // FSStock.push({"chatId":chatId, "stock":stock});
+}
+function formatValue(msg){
+    //console.log( msg);
+    var res = msg.split(":");
+    
+    if (res.length != 2){
+        console.log("error de formato");
+        return 0;
+    }else{
+         if ((validar_num(res[0]) == 1) && (validar_num(res[1]) == 1)){
+            console.log("formato válido");
+            return 1;
+         }else{
+            return 0;
+         }
+        
+    }
+}
+
+
+function validar_num(num){
+    if(isNaN(num)){
+         //console.log("no es numero");
+        return 0;
+    }else{
+       //console.log("es numero");
+        return 1;
+    }
 }
