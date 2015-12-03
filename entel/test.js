@@ -6,7 +6,7 @@ var connection = mysql.createConnection({
 	database : 'inventarioEntel',
 	port: '3306'
 });
-var cont =0;
+var cont =1;
 	connection.connect(function(err) {
   if (err) {
   	console.log("sdasdasadsasdads");
