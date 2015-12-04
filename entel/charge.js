@@ -1,8 +1,8 @@
     var mysql      = require('mysql');
     var connection = mysql.createConnection({
-      	host     : 'dbaseclo.cevi1pjzmkcs.us-east-1.rds.amazonaws.com',
-    	user     : 'cloMaestro',
-    	password : '142478clo',
+      	host     : 'cloc3nc0.ce6x8w9trdli.us-west-2.rds.amazonaws.com',
+    	user     : 'cloadm',
+    	password : 'clo12345',
     	database : 'inventarioEntel',
     	port: '3306'
     });
@@ -27,7 +27,7 @@
             var arrayFromCsv = [];
             var $ = jQuery = require('jquery');
             require('./jquery.csv.js');
-            var file = data.url; // PATH ARCHIVO CARGADO
+            var file = 'http://52.20.79.190/uploadFileCsv/uploads/test.csv'; // PATH ARCHIVO CARGADO
             fs.readFile(file, 'UTF-8', function(err, csv) {
                   var data = $.csv.toArrays(csv);
                   for(var i=0, len=data.length; i<len; i++) {
