@@ -36,7 +36,7 @@ var restler = require('restler');
     fs.readFile(file, 'utf8', function(err, csv) {
       
       var data = $.csv.toArrays(csv);
-      for(var i=0, len=data.length; i<len-2; i++) {
+      for(var i=0, len=data.length; i<len; i++) {
         //console.log(data[i] + "------- ");
         var aux = [];
         var lineData;
